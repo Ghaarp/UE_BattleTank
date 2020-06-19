@@ -9,6 +9,8 @@
 
 class UBarrelMeshComponent;
 class UTurretMeshComponent;
+class AProjectile;
+
 UCLASS()
 class BATTLETANK_API ATank : public APawn
 {
@@ -27,10 +29,13 @@ public:
 		void SetTurretMesh(UTurretMeshComponent* TurretToSet);
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
-		void Fire(UBarrelMeshComponent* Barrel);
+		void Fire();
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-		float ProjectileStartingSpeed = 125000;
+		float ProjectileStartingSpeed = 5000;
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+		TSubclassOf<AProjectile> Projectile;
 
 protected:
 	// Called to bind functionality to input
@@ -40,5 +45,5 @@ protected:
 	UTankAimComponent* AimComponent;
 
 private:
-	
+	UBarrelMeshComponent* LocalBarrel = nullptr;
 };
