@@ -18,9 +18,17 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override; 
 
+	UPROPERTY(EditDefaultsOnly)
+		float FiringDelay = 3;
+
+	
+
 private:
 	ATank *PlayerTank, *ControlledTank;
 	ATank* GetPlayerTank();
+
+	bool FiringEnabled = true;
+	float CurrentFireDelay = 0;
 };
 
 

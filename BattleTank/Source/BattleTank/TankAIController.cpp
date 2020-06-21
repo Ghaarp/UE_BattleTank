@@ -15,8 +15,28 @@ void ATankAIController::BeginPlay()
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!FiringEnabled)
+	{
+		CurrentFireDelay += DeltaTime;
+	}
+
+	if (CurrentFireDelay > FiringDelay)
+	{
+		FiringEnabled = true;
+		CurrentFireDelay = 0;
+	}
+		
+
 	if (ControlledTank && PlayerTank)
+	{
 		ControlledTank->AimAt(PlayerTank->GetActorTransform().GetLocation());
+		if (FiringEnabled)
+		{
+			ControlledTank->Fire();
+			FiringEnabled = false;
+		}
+	}
+		
 }
 
 ATank* ATankAIController::GetControlledTank() const

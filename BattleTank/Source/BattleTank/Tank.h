@@ -10,6 +10,7 @@
 class UBarrelMeshComponent;
 class UTurretMeshComponent;
 class AProjectile;
+class UTrackComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -29,6 +30,12 @@ public:
 		void SetTurretMesh(UTurretMeshComponent* TurretToSet);
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
+		void SetLeftTrack(UTrackComponent* Track);
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+		void SetRightTrack(UTrackComponent* Track);
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
 		void Fire();
 
 	UPROPERTY(EditAnywhere, Category = Firing)
@@ -42,8 +49,18 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	UTankAimComponent* AimComponent;
 
 private:
 	UBarrelMeshComponent* LocalBarrel = nullptr;
+	UTrackComponent* LeftTrack = nullptr;
+	UTrackComponent* RightTrack = nullptr;
+	void ApplyForceToTank();
+
+	float LeftThrottle = 0;
+	float RightThrottle = 0;
+
+	void Move(float AxisValue);
+	void Rotate(float AxisValue);
 };
