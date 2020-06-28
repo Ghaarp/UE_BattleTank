@@ -8,8 +8,6 @@ void ATankAIController::BeginPlay()
 	Super::BeginPlay();
 	ControlledTank = GetControlledTank();
 	PlayerTank = GetPlayerTank();
-	if(PlayerTank)
-		UE_LOG(LogTemp, Warning, TEXT("Player: %s"), *PlayerTank->GetName());
 }
 
 void ATankAIController::Tick(float DeltaTime)
@@ -24,8 +22,7 @@ void ATankAIController::Tick(float DeltaTime)
 	{
 		FiringEnabled = true;
 		CurrentFireDelay = 0;
-	}
-		
+	}		
 
 	if (ControlledTank && PlayerTank)
 	{
@@ -35,8 +32,10 @@ void ATankAIController::Tick(float DeltaTime)
 			ControlledTank->Fire();
 			FiringEnabled = false;
 		}
+
+		MoveToActor(PlayerTank, 1000.f, true, true, false);
 	}
-		
+	
 }
 
 ATank* ATankAIController::GetControlledTank() const

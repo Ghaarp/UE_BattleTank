@@ -11,6 +11,7 @@ class UBarrelMeshComponent;
 class UTurretMeshComponent;
 class AProjectile;
 class UTrackComponent;
+class UTankMovementComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -20,6 +21,9 @@ class BATTLETANK_API ATank : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ATank();
+
+	void Move(float AxisValue);
+	void Rotate(float AxisValue);
 
 	void AimAt(FVector Location);
 
@@ -51,16 +55,9 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	UTankAimComponent* AimComponent;
+	UTankMovementComponent* MovingComponent;
 
 private:
 	UBarrelMeshComponent* LocalBarrel = nullptr;
-	UTrackComponent* LeftTrack = nullptr;
-	UTrackComponent* RightTrack = nullptr;
-	void ApplyForceToTank();
-
-	float LeftThrottle = 0;
-	float RightThrottle = 0;
-
-	void Move(float AxisValue);
-	void Rotate(float AxisValue);
 };
+

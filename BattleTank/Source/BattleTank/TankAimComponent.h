@@ -9,6 +9,7 @@
 
 class UBarrelMeshComponent;
 class UTurretMeshComponent;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimComponent : public UActorComponent
 {
