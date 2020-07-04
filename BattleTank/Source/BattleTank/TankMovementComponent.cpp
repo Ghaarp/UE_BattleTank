@@ -12,10 +12,13 @@ UTankMovementComponent::UTankMovementComponent()
 
 void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
-	FVector TankForward = GetOwner()->GetActorForwardVector();
+	FVector TankForward = GetOwner()->GetActorForwardVector().GetSafeNormal();
 	FVector MoveVelocityUnit = MoveVelocity.GetSafeNormal();
-	float Multiplier = FVector::DotProduct(TankForward, MoveVelocityUnit);
-	Move(Multiplier);
+	float MovingMultiplier = FVector::DotProduct(TankForward, MoveVelocityUnit);
+	Move(MovingMultiplier);
+
+	float RotationMultiplier = FVector::CrossProduct(TankForward, MoveVelocityUnit).Z;
+	Rotate(RotationMultiplier * -1);
 }
 
 void UTankMovementComponent::SetLeftTrack(UTrackComponent* Track)
@@ -52,7 +55,7 @@ void UTankMovementComponent::ComponentTick(float DeltaTime)
 
 void UTankMovementComponent::ApplyForceToTank()
 {
-	if (!LeftTrack || !RightTrack)
+	if (!ensure(LeftTrack && RightTrack))
 		return;
 
 	LeftThrottle = FMath::Clamp<float>(LeftThrottle, -1.f, 1.f);

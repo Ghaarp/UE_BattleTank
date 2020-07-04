@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "TankAimComponent.h"
 #include "TankAIController.h"
 
 void ATankAIController::BeginPlay()
@@ -26,10 +26,14 @@ void ATankAIController::Tick(float DeltaTime)
 
 	if (ControlledTank && PlayerTank)
 	{
-		ControlledTank->AimAt(PlayerTank->GetActorTransform().GetLocation());
+		UTankAimComponent* AimComponent = ControlledTank->FindComponentByClass<UTankAimComponent>();
+		if(!ensure(AimComponent))
+			return;
+
+		AimComponent->AimAt(PlayerTank->GetActorTransform().GetLocation());
 		if (FiringEnabled)
 		{
-			ControlledTank->Fire();
+			AimComponent->Fire();
 			FiringEnabled = false;
 		}
 

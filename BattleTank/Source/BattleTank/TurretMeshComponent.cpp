@@ -28,8 +28,6 @@ void UTurretMeshComponent::RotateToDirection(float Angle)
 		}		
 	}
 	SetRelativeRotation(FRotator(0, CalculatedAngle - RootYaw, 0));
-
-	//UE_LOG(LogTemp, Warning, TEXT("RootYaw:%f :"), RootYaw);
 }
 
 float UTurretMeshComponent::SetInBorders(float Value)

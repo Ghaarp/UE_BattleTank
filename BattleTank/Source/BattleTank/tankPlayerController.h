@@ -8,6 +8,8 @@
 #include "GameFramework/PlayerController.h"
 #include "tankPlayerController.generated.h"
 
+
+class UTankAimComponent;
 /**
  * 
  */
@@ -17,6 +19,7 @@ class BATTLETANK_API AtankPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "Custom")
 	ATank* GetControlledTank() const;
 	virtual void BeginPlay() override;
 	void AimToCrosshair();
@@ -31,6 +34,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnCreateAimingComponent(UTankAimComponent* Component);
+
 private:
-	ATank* ControlledTank;
+	ATank* ControlledTank = nullptr;
+	UTankAimComponent* AimComponent = nullptr;
 };

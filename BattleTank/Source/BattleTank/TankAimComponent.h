@@ -7,8 +7,17 @@
 #include "Components/ActorComponent.h"
 #include "TankAimComponent.generated.h"
 
+UENUM()
+enum class EAimState : uint8
+{
+	Reloading,
+	Aiming,
+	Ready
+};
+
 class UBarrelMeshComponent;
 class UTurretMeshComponent;
+class AProjectile;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimComponent : public UActorComponent
@@ -18,12 +27,25 @@ class BATTLETANK_API UTankAimComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UTankAimComponent();
+
+	UPROPERTY(BlueprintReadOnly)
+	EAimState AimState = EAimState::Reloading;
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+		float ProjectileStartingSpeed = 5000;
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+		TSubclassOf<AProjectile> Projectile;
+
 	void SetBarrelMesh(UBarrelMeshComponent* BarrelToSet);
 	void SetTurretMesh(UTurretMeshComponent* TurretToSet);
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void AimAt(FVector Location, float ProjectileSpeed);
+	void AimAt(FVector Location);
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void Fire();
 
 protected:
 	// Called when the game starts

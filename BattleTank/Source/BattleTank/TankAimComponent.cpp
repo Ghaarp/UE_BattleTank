@@ -2,6 +2,7 @@
 
 #include "BarrelMeshComponent.h"
 #include "TurretMeshComponent.h"
+#include "Projectile.h"
 #include "TankAimComponent.h"
 
 // Sets default values for this component's properties
@@ -14,23 +15,22 @@ UTankAimComponent::UTankAimComponent()
 	// ...
 }
 
-void UTankAimComponent::AimAt(FVector Location, float ProjectileSpeed)
+void UTankAimComponent::AimAt(FVector Location)
 {
 	FString Name = GetName();
-	if (!Barrel)
+	if (!ensure(Barrel))
 	{
 		return;		
 	}
 
 	FVector BarrelLoc = Barrel->GetSocketLocation(FName("FiringSocket"));
 	FVector Result;
-	//UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s from %s"), *Name, *Location.ToString(), *BarrelLoc.ToString());
 	if (!UGameplayStatics::SuggestProjectileVelocity(
 		this,
 		Result,
 		BarrelLoc,
 		Location,
-		ProjectileSpeed,
+		ProjectileStartingSpeed,
 		false,
 		1.f,
 		0.0f,
@@ -86,5 +86,20 @@ void UTankAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// ...
+}
+
+void UTankAimComponent::Fire()
+{
+	if (!ensure(Barrel))
+		return;
+
+	FVector StartLoc = Barrel->GetSocketLocation(FName("FiringSocket"));
+	FActorSpawnParameters Params = FActorSpawnParameters();
+	//GetWorld()->SpawnActor<AProjectile>(Projectile, StartLoc, Params);
+	AProjectile* ProjectileObj = GetWorld()->SpawnActor<AProjectile>(Projectile,
+		Barrel->GetSocketLocation(FName("FiringSocket")),
+		Barrel->GetSocketRotation(FName("FiringSocket")));
+
+	ProjectileObj->Launch(ProjectileStartingSpeed);
 }
 
