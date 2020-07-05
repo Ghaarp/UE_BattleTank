@@ -21,8 +21,6 @@ public:
 	void Move(float AxisValue);
 	void Rotate(float AxisValue);
 
-	void AimAt(FVector Location);
-
 	UFUNCTION(BlueprintCallable, Category = Setup)
 		void InitAimComponent(UTankAimComponent* Component, UBarrelMeshComponent* BarrelToSet, UTurretMeshComponent* TurretToSet);
 

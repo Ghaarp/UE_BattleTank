@@ -53,6 +53,11 @@ void UTankMovementComponent::ComponentTick(float DeltaTime)
 	ApplyForceToTank();
 }
 
+void UTankMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tick"));
+}
+
 void UTankMovementComponent::ApplyForceToTank()
 {
 	if (!ensure(LeftTrack && RightTrack))

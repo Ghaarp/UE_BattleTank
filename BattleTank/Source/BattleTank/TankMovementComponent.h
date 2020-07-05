@@ -35,4 +35,6 @@ private:
 
 	float LeftThrottle = 0;
 	float RightThrottle = 0;
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

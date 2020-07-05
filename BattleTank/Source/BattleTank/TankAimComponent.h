@@ -29,7 +29,7 @@ public:
 	UTankAimComponent();
 
 	UPROPERTY(BlueprintReadOnly)
-	EAimState AimState = EAimState::Reloading;
+		EAimState AimState = EAimState::Reloading;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
 		float ProjectileStartingSpeed = 5000;
@@ -37,15 +37,18 @@ public:
 	UPROPERTY(EditAnywhere, Category = Firing)
 		TSubclassOf<AProjectile> Projectile;
 
+	UPROPERTY(EditAnywhere, CAtegory = Firing)
+		float ReloadTime = 3;
+
 	void SetBarrelMesh(UBarrelMeshComponent* BarrelToSet);
 	void SetTurretMesh(UTurretMeshComponent* TurretToSet);
 
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void AimAt(FVector Location);
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void Fire();
+
+
 
 protected:
 	// Called when the game starts
@@ -56,4 +59,7 @@ private:
 	UTurretMeshComponent* Turret = nullptr;
 	void GuideBarrelByDirection(FVector Direction);
 	void RotateTurretByDirection(FVector Direction);
+
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };
