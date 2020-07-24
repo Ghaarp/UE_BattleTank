@@ -31,7 +31,8 @@ void ATankAIController::Tick(float DeltaTime)
 			return;
 
 		AimComponent->AimAt(PlayerTank->GetActorTransform().GetLocation());
-		if (FiringEnabled)
+		EAimState ActualState = AimComponent->GetAimState();
+		if (FiringEnabled && ActualState == EAimState::Ready)
 		{
 			AimComponent->Fire();
 			FiringEnabled = false;

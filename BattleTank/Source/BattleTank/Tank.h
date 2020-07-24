@@ -8,6 +8,7 @@
 
 class UTrackComponent;
 class UTankMovementComponent;
+class UParticleSystemComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -22,10 +23,22 @@ public:
 	void Rotate(float AxisValue);
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
-		void InitAimComponent(UTankAimComponent* Component, UBarrelMeshComponent* BarrelToSet, UTurretMeshComponent* TurretToSet);
+	void InitAimComponent(UTankAimComponent* Component, UBarrelMeshComponent* BarrelToSet, UTurretMeshComponent* TurretToSet);
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
-		void InitMovementComponent(UTankMovementComponent* Component, UTrackComponent* LeftTrack, UTrackComponent* RightTrack);
+	void InitMovementComponent(UTankMovementComponent* Component, UTrackComponent* LeftTrack, UTrackComponent* RightTrack);
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	float GetHealth();
+
+	UFUNCTION()
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override; 
+
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystemComponent* ParticlesExplosion = nullptr;
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetParticles(UParticleSystemComponent* incParticlesExplosion);
 
 protected:
 	// Called to bind functionality to input
@@ -36,6 +49,20 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent* MovingComponent = nullptr;
+
+	UPROPERTY(BlueprintReadOnly)
+	UTankAimComponent* AimComponent = nullptr;
+
+	float StartingHealth = 100.f;
+
+	UPROPERTY(EditAnywhere)
+	float Health = StartingHealth;
+
+
+	bool bIsTankdestroyed = false;
+
+private:
+	void DestroyThisTank();
 
 };
 

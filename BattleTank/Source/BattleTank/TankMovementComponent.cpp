@@ -31,6 +31,11 @@ void UTankMovementComponent::SetRightTrack(UTrackComponent* Track)
 	RightTrack = Track;
 }
 
+void UTankMovementComponent::TurnOffEngine()
+{
+	bEngineTurnedOn = false;
+}
+
 void UTankMovementComponent::Move(float AxisValue)
 {
 	LeftThrottle += AxisValue;
@@ -48,14 +53,10 @@ void UTankMovementComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UTankMovementComponent::ComponentTick(float DeltaTime)
-{
-	ApplyForceToTank();
-}
-
 void UTankMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Tick"));
+	if (!bEngineTurnedOn) return;
+	ApplyForceToTank();
 }
 
 void UTankMovementComponent::ApplyForceToTank()
@@ -69,8 +70,8 @@ void UTankMovementComponent::ApplyForceToTank()
 	if (LeftThrottle == 0 && RightThrottle == 0)
 		return;
 
-	LeftTrack->ApplyForce(LeftThrottle);
-	RightTrack->ApplyForce(RightThrottle);
+	LeftTrack->SetThrottle(LeftThrottle);
+	RightTrack->SetThrottle(RightThrottle);
 
 	LeftThrottle = 0.f;
 	RightThrottle = 0.f;

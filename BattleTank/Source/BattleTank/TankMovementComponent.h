@@ -19,10 +19,11 @@ class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 public:
 	UTankMovementComponent();
 	virtual void BeginPlay() override;
-	void ComponentTick(float DeltaTime);
 	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 	void SetLeftTrack(UTrackComponent* Track);
 	void SetRightTrack(UTrackComponent* Track);
+
+	void TurnOffEngine();
 
 	void Move(float AxisValue);
 	void Rotate(float AxisValue);
@@ -35,6 +36,8 @@ private:
 
 	float LeftThrottle = 0;
 	float RightThrottle = 0;
+
+	bool bEngineTurnedOn = true;
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

@@ -10,6 +10,7 @@
 UENUM()
 enum class EAimState : uint8
 {
+	NoAmmo, 
 	Reloading,
 	Aiming,
 	Ready
@@ -28,17 +29,17 @@ public:
 	// Sets default values for this component's properties
 	UTankAimComponent();
 
-	UPROPERTY(BlueprintReadOnly)
-		EAimState AimState = EAimState::Reloading;
-
 	UPROPERTY(EditAnywhere, Category = Firing)
 		float ProjectileStartingSpeed = 5000;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
 		TSubclassOf<AProjectile> Projectile;
 
-	UPROPERTY(EditAnywhere, CAtegory = Firing)
+	UPROPERTY(EditAnywhere, Category = Firing)
 		float ReloadTime = 3;
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+		uint8 Ammo = 20;
 
 	void SetBarrelMesh(UBarrelMeshComponent* BarrelToSet);
 	void SetTurretMesh(UTurretMeshComponent* TurretToSet);
@@ -48,18 +49,36 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void Fire();
 
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	FString GetAmmo();
 
+	EAimState GetAimState() const;
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+		void SetProjectileClass(TSubclassOf<AProjectile> IncProjectile);
+
+	void Deactivate();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;	
+	UPROPERTY(BlueprintReadOnly)
+		EAimState AimState = EAimState::Reloading;
 
 private:
 	UBarrelMeshComponent* Barrel = nullptr;
 	UTurretMeshComponent* Turret = nullptr;
+	float LastShootTime = 0.f;
+
 	void GuideBarrelByDirection(FVector Direction);
 	void RotateTurretByDirection(FVector Direction);
+	bool IsBarrelMoving();
+	FVector DirectionUnitVector = FVector(0.f, 0.f, 0.f);
+
+	bool bIsAimingEnabled = true;
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	
 };

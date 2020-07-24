@@ -3,6 +3,7 @@
 #include "TankMovementComponent.h"
 #include "DrawDebugHelpers.h"
 #include "TankAimComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Tank.h"
 
 // Sets default values
@@ -21,7 +22,27 @@ void ATank::BeginPlay()
 void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	MovingComponent->ComponentTick(DeltaTime);
+	if (!bIsTankdestroyed && Health <= 0.f)
+	{
+		DestroyThisTank();
+		Health = 0.f;
+		bIsTankdestroyed = true;
+	}	
+}
+
+void ATank::DestroyThisTank()
+{
+	MovingComponent->TurnOffEngine();
+	if(AimComponent)
+		AimComponent->Deactivate();
+	
+	if(ParticlesExplosion)
+	ParticlesExplosion->Activate();
+}
+
+void ATank::SetParticles(UParticleSystemComponent* incParticlesExplosion)
+{
+	ParticlesExplosion = incParticlesExplosion;
 }
 
 // Called to bind functionality to input
@@ -46,7 +67,7 @@ void ATank::Rotate(float AxisValue)
 
 void ATank::InitAimComponent(UTankAimComponent* Component, UBarrelMeshComponent* BarrelToSet, UTurretMeshComponent* TurretToSet)
 {
-	UTankAimComponent* AimComponent = Component;
+	AimComponent = Component;
 	AimComponent->SetBarrelMesh(BarrelToSet);
 	AimComponent->SetTurretMesh(TurretToSet);
 }
@@ -56,6 +77,17 @@ void ATank::InitMovementComponent(UTankMovementComponent* Component, UTrackCompo
 	MovingComponent = Component;
 	MovingComponent->SetLeftTrack(LeftTrack);
 	MovingComponent->SetRightTrack(RightTrack);
+}
+
+float ATank::GetHealth()
+{
+	return Health;
+}
+
+float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Health -= DamageAmount;
+	return DamageAmount;
 }
 
 

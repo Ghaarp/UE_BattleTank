@@ -15,8 +15,19 @@ class BATTLETANK_API UTrackComponent : public UStaticMeshComponent
 	GENERATED_BODY()
 	
 public:
+	UTrackComponent();
 	UPROPERTY(EditDefaultsOnly)
-		float MaxForce = 400000.f;
+		float MaxForce = 40000000.f;
 
-	void ApplyForce(float Throttle);
+	void ApplyForce();
+	void SetThrottle(float ThrottleValue);
+	void AddSideFriction();
+
+	virtual void BeginPlay() override;
+
+private:
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+	float Throttle = 0.f;
 };
