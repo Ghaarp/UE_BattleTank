@@ -45,7 +45,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	Particles->Deactivate();
 	ParticlesExplosion->Activate();
 	RadialForce->FireImpulse();	
-	UGameplayStatics::ApplyRadialDamage(this, Damage, GetActorLocation(), RadialForce->Radius, UDamageType::StaticClass(), TArray<AActor*>());
+	UGameplayStatics::ApplyRadialDamageWithFalloff(this, Damage, 1, GetActorLocation(), 10.f, RadialForce->Radius + 100.f, 1.5f, UDamageType::StaticClass(), TArray<AActor*>());
 	CollisionMesh->DestroyComponent();
 	FTimerHandle Timer = FTimerHandle();
 	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpired, DestroyTimer, false);

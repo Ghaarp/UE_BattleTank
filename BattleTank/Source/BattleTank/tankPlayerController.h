@@ -40,4 +40,8 @@ public:
 private:
 	ATank* ControlledTank = nullptr;
 	UTankAimComponent* AimComponent = nullptr;
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+	void OnTankDeath();
 };

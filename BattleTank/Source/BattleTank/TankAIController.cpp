@@ -8,6 +8,7 @@ void ATankAIController::BeginPlay()
 	Super::BeginPlay();
 	ControlledTank = GetControlledTank();
 	PlayerTank = GetPlayerTank();
+	PlayerTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnTankDeath);
 }
 
 void ATankAIController::Tick(float DeltaTime)
@@ -24,7 +25,7 @@ void ATankAIController::Tick(float DeltaTime)
 		CurrentFireDelay = 0;
 	}		
 
-	if (ControlledTank && PlayerTank)
+	if (ControlledTank && PlayerTank && bControlNeeded)
 	{
 		UTankAimComponent* AimComponent = ControlledTank->FindComponentByClass<UTankAimComponent>();
 		if(!ensure(AimComponent))
@@ -41,6 +42,24 @@ void ATankAIController::Tick(float DeltaTime)
 		MoveToActor(PlayerTank, 1000.f, true, true, false);
 	}
 	
+}
+
+void ATankAIController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (InPawn)
+	{
+		auto Tank = Cast<ATank>(InPawn);
+		if (!ensure(Tank))
+			return;
+
+		Tank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnTankDeath);
+	}
+}
+
+void ATankAIController::OnTankDeath()
+{
+	bControlNeeded = false;
 }
 
 ATank* ATankAIController::GetControlledTank() const

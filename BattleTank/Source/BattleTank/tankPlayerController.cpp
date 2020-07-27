@@ -16,10 +16,29 @@ void AtankPlayerController::BeginPlay()
 	}	
 }
 
+
+void AtankPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (InPawn)
+	{
+		auto Tank = Cast<ATank>(InPawn);
+		if (!ensure(Tank))
+			return;
+
+		Tank->OnDeath.AddUniqueDynamic(this, &AtankPlayerController::OnTankDeath);
+	}
+}
+
 void AtankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	AimToCrosshair();
+}
+
+void AtankPlayerController::OnTankDeath()
+{
+	StartSpectatingOnly();
 }
 
 ATank* AtankPlayerController::GetControlledTank() const
@@ -51,7 +70,7 @@ bool AtankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	FHitResult OutHitResult;
 
 	FCollisionQueryParams Params(NAME_None, true, GetPawn());
-	GetWorld()->LineTraceSingleByChannel(OutHitResult, OutHitLocation, EndLocation, ECollisionChannel::ECC_Visibility, Params);
+	GetWorld()->LineTraceSingleByChannel(OutHitResult, OutHitLocation, EndLocation, ECollisionChannel::ECC_Camera, Params);
 	if (OutHitResult.GetActor())
 	{
 		HitLocation = OutHitResult.Location;

@@ -10,6 +10,8 @@ class UTrackComponent;
 class UTankMovementComponent;
 class UParticleSystemComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTankDelegate);
+
 UCLASS()
 class BATTLETANK_API ATank : public APawn
 {
@@ -28,8 +30,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void InitMovementComponent(UTankMovementComponent* Component, UTrackComponent* LeftTrack, UTrackComponent* RightTrack);
 
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	float GetHealth();
+	UFUNCTION(BlueprintPure, Category = Setup)
+	float GetHealthPerc() const;
 
 	UFUNCTION()
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override; 
@@ -39,6 +41,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetParticles(UParticleSystemComponent* incParticlesExplosion);
+
+	FTankDelegate OnDeath;
 
 protected:
 	// Called to bind functionality to input

@@ -4,6 +4,7 @@
 #include "DrawDebugHelpers.h"
 #include "TankAimComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Tank.h"
 
 // Sets default values
@@ -36,8 +37,10 @@ void ATank::DestroyThisTank()
 	if(AimComponent)
 		AimComponent->Deactivate();
 	
+	OnDeath.Broadcast();
 	if(ParticlesExplosion)
 	ParticlesExplosion->Activate();
+
 }
 
 void ATank::SetParticles(UParticleSystemComponent* incParticlesExplosion)
@@ -79,15 +82,20 @@ void ATank::InitMovementComponent(UTankMovementComponent* Component, UTrackCompo
 	MovingComponent->SetRightTrack(RightTrack);
 }
 
-float ATank::GetHealth()
+float ATank::GetHealthPerc() const
 {
-	return Health;
+	return Health/StartingHealth;
 }
 
 float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	Health -= DamageAmount;
-	return DamageAmount;
+	
+	FRadialDamageEvent RadialDamageEvent = (FRadialDamageEvent const&)DamageEvent;
+	float Distance = (GetActorLocation() - RadialDamageEvent.Origin).Size();
+	float Result = DamageAmount*(RadialDamageEvent.Params.GetDamageScale(UKismetMathLibrary::Abs(Distance)));
+	Health -= Result;
+	UE_LOG(LogTemp, Warning, TEXT("%f"), Result);
+	return Result;
 }
 
 

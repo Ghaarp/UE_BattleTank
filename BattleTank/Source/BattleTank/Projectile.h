@@ -28,7 +28,7 @@ public:
 		float DestroyTimer = 5;
 
 	UPROPERTY(EditDefaultsOnly)
-		float Damage = 100.f;
+		float Damage = 20.f;
 
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* CollisionMesh = nullptr;

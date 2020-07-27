@@ -19,9 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override; 
 
 	UPROPERTY(EditDefaultsOnly)
-		float FiringDelay = 3;
-
-	
+		float FiringDelay = 3;	
 
 private:
 	ATank *PlayerTank, *ControlledTank;
@@ -29,6 +27,13 @@ private:
 
 	bool FiringEnabled = true;
 	float CurrentFireDelay = 0;
+
+	virtual void SetPawn(APawn* InPawn) override;
+	bool bControlNeeded = true;
+
+	UFUNCTION()
+		void OnTankDeath();
+
 };
 
 

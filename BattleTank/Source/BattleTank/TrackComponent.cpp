@@ -28,8 +28,6 @@ void UTrackComponent::SetThrottle(float ThrottleValue)
 
 void UTrackComponent::ApplyForce()
 { 
-	UE_LOG(LogTemp, Warning, TEXT("%f"), Throttle);
-
 	auto Vector = GetForwardVector() * MaxForce * Throttle;
 	auto Location = GetComponentLocation();
 	auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
